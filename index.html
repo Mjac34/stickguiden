@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7b2d52">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+<title>Stickguiden</title>
+</head>
+<body>
+
+<!-- Hem -->
+<section id="home" class="screen active">
+  <header class="bar"><h1>🧶 Stickguiden</h1></header>
+  <main class="wrap">
+    <div id="projList"></div>
+    <button class="btn primary wide" id="newBtn">+ Nytt projekt</button>
+    <p class="tip">Allt sparas bara på den här enheten. Välj ett plagg, fyll i mått och stickfasthet, så räknar appen fram alla varv. Under stickningen visar läget <b>Nu</b> var du är, vad du gjorde senast och vad som kommer härnäst.</p>
+  </main>
+</section>
+
+<!-- Formulär -->
+<section id="form" class="screen">
+  <header class="bar"><button class="icon" data-back>←</button><h2 id="formTitle">Nytt projekt</h2></header>
+  <main class="wrap">
+    <form id="pform" autocomplete="off">
+      <fieldset>
+        <legend>Plagg</legend>
+        <label>Namn<input name="name" required placeholder="t.ex. Grå kofta"></label>
+        <div class="seg" id="typeSeg">
+          <label><input type="radio" name="type" value="cardigan" checked><span>Cardigan<small>raglan, öppen fram</small></span></label>
+          <label><input type="radio" name="type" value="troja"><span>Tröja<small>raglan, stickas runt</small></span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Garn och stickor</legend>
+        <label>Garn<input name="yarn" placeholder="t.ex. Drops Merino Extra Fine"></label>
+        <div class="row2">
+          <label>Stickor (mm)<input name="needle" type="number" step="0.25" min="1" inputmode="decimal" placeholder="4"></label>
+          <button type="button" class="btn small" id="suggestBtn">Föreslå stickfasthet</button>
+        </div>
+        <div class="row2">
+          <label>Maskor per 10 cm<input name="stG" type="number" step="0.5" min="5" max="50" inputmode="decimal" required></label>
+          <label>Varv per 10 cm<input name="rowG" type="number" step="0.5" min="5" max="70" inputmode="decimal" required></label>
+        </div>
+        <p class="hint">Sticka en provlapp i slätstickning (ca 15×15 cm), tvätta och torka den, och räkna maskor och varv på 10 cm. Förslaget från stickstorleken är bara ungefärligt.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Storlek – färdiga mått i cm</legend>
+        <div class="chips" id="sizeChips"></div>
+        <p class="hint">Välj en storlek för att fylla i måtten och justera sedan det du vill. Måtten gäller det färdiga plagget, inklusive rörelsevidd.</p>
+        <div class="row2">
+          <label>Bröstvidd<input name="chest" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Halsvidd (uppläggning)<input name="neck" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Överarmsvidd<input name="upperArm" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Handledsvidd<input name="wrist" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Okets djup<input name="yoke" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Under ärmen (per sida)<input name="underarm" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Kroppslängd från ärmhålan<input name="bodyLen" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Ärmlängd från ärmhålan<input name="sleeveLen" type="number" step="0.5" inputmode="decimal" required></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Kanter</legend>
+        <div class="row2">
+          <label>Halsresår (cm)<input name="neckRib" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Nederkant (cm)<input name="hemRib" type="number" step="0.5" inputmode="decimal" required></label>
+          <label>Mudd (cm)<input name="cuffRib" type="number" step="0.5" inputmode="decimal" required></label>
+        </div>
+        <div class="row2 cardOnly">
+          <label>Framkant (cm)<input name="band" type="number" step="0.5" inputmode="decimal"></label>
+          <label>Antal knappar<input name="buttons" type="number" step="1" min="0" max="20" inputmode="numeric"></label>
+          <label>Knapphål på<select name="buttonSide"><option value="höger">höger framkant</option><option value="vänster">vänster framkant</option></select></label>
+        </div>
+      </fieldset>
+
+      <div id="preview" class="card"></div>
+      <button class="btn primary wide" type="submit" id="saveBtn">Spara och börja sticka</button>
+    </form>
+  </main>
+</section>
+
+<!-- Projekt -->
+<section id="proj" class="screen">
+  <div class="sticky" id="projHead">
+    <header class="bar"><button class="icon" data-back>←</button><h2 id="projTitle"></h2><button class="icon" id="wakeBtn" title="Håll skärmen tänd">💡</button></header>
+    <nav class="tabs" id="tabs">
+      <button data-tab="now" class="on">Nu</button><button data-tab="pattern">Mönster</button><button data-tab="log">Logg</button><button data-tab="info">Info</button>
+    </nav>
+  </div>
+  <main class="wrap" id="tab-now"></main>
+  <main class="wrap hidden" id="tab-pattern"></main>
+  <main class="wrap hidden" id="tab-log"></main>
+  <main class="wrap hidden" id="tab-info"></main>
+  <footer class="actions" id="actions">
+    <button class="btn" id="undoBtn">↶ Ångra</button>
+    <button class="btn done" id="doneBtn">✓ Varv klart</button>
+  </footer>
+</section>
+
+<div id="toast"></div>
+<script src="pattern.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
